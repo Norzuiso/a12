@@ -1,0 +1,9 @@
+<span *ngFor="let contenido of contenedor; let i = index ">
+  <span class="border border-dark-subtle element">
+    <span [ngClass]="{'bg-black text-white' : contenido.hasProduct,
+                            'bg-withe': !contenido.hasProduct}"
+    class="px-2">
+    {{ i+1 }}
+      </span>
+  </span>
+</span>

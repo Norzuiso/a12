@@ -1,0 +1,44 @@
+<div class="container-fluid" *ngIf="continueProcess">
+  <div class="row">
+    <div class="col">
+      Tiempo: {{tiempo}}
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <p class="h1">Volado</p>
+      <p>{{ consumidorOProductor ? 'Productor intenta ingresar' : 'Consumidor intenta ingresar'}}</p>
+    </div>
+  </div>
+
+
+  <div class="row py-3">
+    <div class="col-6">
+      <p class="h3">Productor</p>
+      <p class="h5">Estado: {{isTrueDespiertoFalseDormido(productorTrabajando)}}</p>
+      Cantidad a producir: <span *ngIf="productorTrabajando"> {{ cantidad }}</span>
+    </div>
+    <div class="col-6">
+      <p class="h3">Consumidor</p>
+      <p class="h5">Estado: {{isTrueDespiertoFalseDormido(consumidorTrabajando)}}</p>
+      Cantidad a producir: <span *ngIf="consumidorTrabajando">Cantidad a consumir: {{ cantidad }}</span>
+    </div>
+  </div>
+
+</div>
+<div class="container-fluid" *ngIf="!continueProcess">
+  <h1>PROGRAMA TERMINADO</h1>
+</div>
+
+<div class="container-fluid">
+  <div class="row py-2" *ngIf="continueProcess">
+    <div class="col">
+
+      <button class="btn btn-secondary btn-lg btn-block" (click)="iniciarProceso()" >Iniciar</button>
+
+    </div>
+  </div>
+  <app-buffer [contenedor]="contenedor"></app-buffer>
+</div>
