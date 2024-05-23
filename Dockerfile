@@ -1,17 +1,29 @@
-# Dockerfile para configurar Apache y agregar el archivo de configuración personalizado
+# Usa una imagen base de Node.js para construir la aplicación Angular
+FROM node:16 as build
 
-FROM httpd:2.4
+# Establece el directorio de trabajo en el contenedor
+WORKDIR /app
 
-# Copiar los archivos HTML al directorio de documentos de Apache
-COPY ./public-html/ /usr/local/apache2/htdocs/
+# Copia los archivos package.json y package-lock.json al contenedor
+COPY package*.json ./
 
-# Copiar el archivo de configuración personalizado
-COPY ./my-httpd.conf /usr/local/apache2/conf/my-httpd.conf
+# Instala las dependencias del proyecto
+RUN npm install
 
-# Incluir el archivo de configuración personalizado en la configuración principal de Apache
-RUN echo "Include /usr/local/apache2/conf/my-httpd.conf" >> /usr/local/apache2/conf/httpd.conf
+# Copia el resto de los archivos del proyecto al contenedor
+COPY . .
 
+# Construye la aplicación Angular para producción
+RUN npm run build -- --output-path=dist
+
+# Usa una imagen base de Nginx para servir la aplicación Angular
+FROM nginx:alpine
+
+# Copia los archivos construidos de la etapa anterior al contenedor de Nginx
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Expone el puerto 80 para el servidor Nginx
 EXPOSE 8088
 
-# Iniciar el servidor Apache en el puerto 8088
-CMD ["httpd-foreground", "-D", "FOREGROUND", "-f", "/usr/local/apache2/conf/httpd.conf"]
+# Inicia Nginx
+CMD ["nginx", "-g", "daemon off;"]
